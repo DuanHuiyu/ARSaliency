@@ -10,4 +10,4 @@ This is the official repo of the paper [Saliency in Augmented Reality](https://a
 }
 ```
 
-* The constructed dataset, as well as the proposed VQSal and VQSal-AR model will be available soon.
+* The constructed dataset SARD, as well as the proposed VQSal and VQSal-AR models will be available soon.
