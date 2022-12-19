@@ -1,0 +1,52 @@
+model:
+  base_learning_rate: 4.5e-6
+  target: sal_model.models.vqsal_ar.VQSalModel
+  params:
+    ckpt_path: logs/saliency_salicon/checkpoints/last.ckpt # "logs/vqgan_imagenet_f16_1024/checkpoints/last.ckpt" or "logs/vqgan_imagenet_f16_16384/checkpoints/last.ckpt"
+    ignore_keys: [loss,sal_conv]  # ignore several keys
+    embed_dim: 256
+    n_embed: 1024 # 16384
+    ddconfig:
+      double_z: False
+      z_channels: 256
+      resolution: 256
+      in_channels: 3
+      out_ch: 3
+      ch: 128
+      ch_mult: [ 1,1,2,2,4]  # num_down = len(ch_mult)-1
+      num_res_blocks: 2
+      attn_resolutions: [16]
+      dropout: 0.0
+
+    lossconfig:
+      target: sal_model.modules.sal_losses.SalLoss
+      params:
+        disc_conditional: True
+        disc_in_channels: 4
+        disc_start: 0
+        disc_weight: 0.0
+        codebook_weight: 0.0
+
+data:
+  target: main_transfer.DataModuleFromConfig
+  params:
+    batch_size: 1
+    num_workers: 6
+    train:
+      target: sal_model.data.saliency_AR.SaliencyTrainAR3
+      params:
+        img_root: '/DATA/DATA1/Saliency/SARD/small_size'
+        saliency_root: '/DATA/DATA1/Saliency/SARD/small_size/fixMaps'
+        data_csv: '/DATA/DATA1/Saliency/SARD/train0.csv'
+        size: 512
+        random_crop: True
+        interpolation: "area"
+    validation:
+      target: sal_model.data.saliency_AR.SaliencyValidationAR3
+      params:
+        img_root: '/DATA/DATA1/Saliency/SARD/small_size'
+        saliency_root: '/DATA/DATA1/Saliency/SARD/small_size/fixMaps'
+        data_csv: '/DATA/DATA1/Saliency/SARD/test0.csv'
+        size: 512
+        random_crop: False
+        interpolation: "area"

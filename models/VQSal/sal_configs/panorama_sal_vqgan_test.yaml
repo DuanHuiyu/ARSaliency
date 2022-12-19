@@ -1,0 +1,45 @@
+model:
+  base_learning_rate: 4.5e-6
+  target: sal_model.models.vqgan.VQSalModel
+  params:
+    # ckpt_path: logs/vqgan_imagenet_f16_1024/checkpoints/last.ckpt # "logs/vqgan_imagenet_f16_1024/checkpoints/last.ckpt" or "logs/vqgan_imagenet_f16_16384/checkpoints/last.ckpt"
+    embed_dim: 256
+    n_embed: 1024
+    ddconfig:
+      double_z: False
+      z_channels: 256
+      resolution: 256
+      in_channels: 3
+      out_ch: 3
+      ch: 128
+      ch_mult: [ 1,1,2,2,4]  # num_down = len(ch_mult)-1
+      num_res_blocks: 2
+      attn_resolutions: [16]
+      dropout: 0.0
+
+    lossconfig:
+      target: sal_model.modules.sal_losses.SalLoss
+      params:
+        disc_conditional: True
+        disc_in_channels: 4
+        disc_start: 11 #250001
+        disc_weight: 0.8 #0.8
+        codebook_weight: 0.0
+
+data:
+  target: main_transfer.DataModuleFromConfig
+  params:
+    batch_size: 1
+    num_workers: 8
+    train:
+      target: sal_model.data.panorama.PanoramaSaliencyTDTrain
+      params:
+        size: 512
+        random_crop: True
+        interpolation: "area"
+    validation:
+      target: sal_model.data.panorama.PanoramaSaliencyTDValidation
+      params:
+        size: 512
+        random_crop: False
+        interpolation: "area"
