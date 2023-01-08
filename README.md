@@ -23,7 +23,7 @@ The proposed VQSal and VQSal-AR models as well as the baseline saliency models c
 The metrics for measuring performance of saliency models can be found in `metrics`.
 
 ### Results
-The results of all saliency models will be released soon
+- traditional results: [[百度网盘](https://pan.baidu.com/s/1Lt7RyAupbWcmuOlN3lMC8g?pwd=0osf)]
 
 ### Contact
 If you have any question, please contact huiyuduan@sjtu.edu.cn
